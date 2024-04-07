@@ -17,11 +17,18 @@ construnctor_df = spark.read.parquet('dbfs:/mnt/silver/constructors/')
 qualifying_df1 = qualifying_df.select('driver_Id', 'constructor_Id', col('q1').alias('Qualifying1'), col('q2').alias('Qualifying2'), col('q3').alias('Qualifying3'))
 
 
+from pyspark.sql.functions import regexp_replace
+for i in ["Qualifying1", "Qualifying2", "Qualifying3"]:
+    qualifying_df1 = qualifying_df1.withColumn(i, regexp_replace(i,'\\\\N', ''))
+
+
+
+# COMMAND ----------
+
 construnctor_df1 = construnctor_df.select('constructor_Id', col('constructor_Ref').alias('Team'))
 
 
 dirver_df1 = dirver_df.select(concat(col('Forename'), lit('  '), col('surname')).alias('Driver'), col('driver_Id') , col('Number'))
-
 
 # COMMAND ----------
 

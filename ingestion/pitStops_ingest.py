@@ -21,7 +21,8 @@ dbutils.fs.ls('/mnt/bronze/')
 
 # COMMAND ----------
 
-df = spark.read.json('dbfs:/mnt/bronze/pit_stops.json', multiLine=True, schema=input_scema)
+df = spark.read.json('dbfs:/mnt/bronze/pit_stops.json', multiLine=True)
+df = df.withColumnRenamed('driverid', 'driver_id').withColumnRenamed('raceid', 'race_id')
 display(df)
 df.printSchema()
 

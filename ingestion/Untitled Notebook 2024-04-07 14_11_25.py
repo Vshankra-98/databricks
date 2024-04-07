@@ -1,9 +1,9 @@
 # Databricks notebook source
-# MAGIC %run ../Utils/common_functions
+dbutils.fs.ls('/mnt/bronze/')
 
 # COMMAND ----------
 
-# define schema 
+from pyspark.sql.types import StructField, StructType, IntegerType, StringType, FloatType
 
 input_schema = StructType([
     StructField('resultId', IntegerType()),
@@ -29,36 +29,9 @@ input_schema = StructType([
 
 # COMMAND ----------
 
-dbutils.fs.ls('/mnt/bronze/')
-
-# COMMAND ----------
-
-df = spark.read.json('dbfs:/mnt/bronze/results.json', schema=input_schema)
+df =spark.read.json('dbfs:/mnt/bronze/results.json', schema= input_schema)
 
 df.display()
-
-# COMMAND ----------
-
-df.count()
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Few Trasformation
-# MAGIC
-
-# COMMAND ----------
-
-current_dt = datetime.today().strftime('%Y-%m-%d')
-
-df = df.withColumnRenamed('resultId', 'result_Id').withColumnRenamed('raceId', 'race_Id').withColumnRenamed('driverId', 'driver_Id').withColumnRenamed('statusId', 'status_Id').withColumnRenamed('constructorid', 'constructor_id').withColumn('ingest_dt', lit(current_dt))
-
-display(df)
-
-
-# COMMAND ----------
-
-df.write.parquet('/mnt/silver/results', mode ='overwrite')
 
 # COMMAND ----------
 
