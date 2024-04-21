@@ -1,15 +1,19 @@
 # Databricks notebook source
+
+
+# COMMAND ----------
+
 # MAGIC %run ../Utils/common_functions
 
 # COMMAND ----------
 
-dbutils.fs.ls("/mnt/silver/")
+dbutils.fs.ls("/mnt/dataricks-formula-one/silver/")
 
 # COMMAND ----------
 
-qualifying_df = spark.read.parquet('dbfs:/mnt/silver/qualifying/')
-dirver_df = spark.read.parquet('dbfs:/mnt/silver/drivers/')
-construnctor_df = spark.read.parquet('dbfs:/mnt/silver/constructors/')
+qualifying_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/qualifying/')
+dirver_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/drivers/')
+construnctor_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/constructors/')
 
 
 # COMMAND ----------
@@ -36,10 +40,11 @@ Qualifying = Qualifying.select('Driver', 'Number', "Team", 'Qualifying1', 'Quali
 Qualifying = Qualifying.select(list_columns)
 
 Qualifying.display()
+Qualifying.count()
 
 # COMMAND ----------
 
-Qualifying.write.mode('overwrite').parquet("/mnt/gold/qualifying_result")
+Qualifying.write.mode('overwrite').parquet("/mnt/dataricks-formula-one/gold/qualifying_result")
 
 # COMMAND ----------
 

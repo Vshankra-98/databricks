@@ -1,5 +1,5 @@
 # Databricks notebook source
-dbutils.notebook.run('/Workspace/Repos/sachink9763@gmail.com/bwt_formula_one/ingestion/circuts-ingest', 0)
+dbutils.notebook.run('circuts-ingest', 0)
 
 # COMMAND ----------
 

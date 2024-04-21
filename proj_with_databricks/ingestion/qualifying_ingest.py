@@ -18,11 +18,11 @@ input_schema = StructType([
 
 # COMMAND ----------
 
-dbutils.fs.ls('/mnt/bronze/')
+dbutils.fs.ls('/mnt/dataricks-formula-one/bronze/')
 
 # COMMAND ----------
 
-df = spark.read.json('dbfs:/mnt/bronze/qualifying/', multiLine=True, schema = input_schema)
+df = spark.read.json('dbfs:/mnt/dataricks-formula-one/bronze/qualifying/', multiLine=True)
 df.count()
 display(df)
 df.printSchema()
@@ -37,7 +37,15 @@ display(df)
 
 # COMMAND ----------
 
-df.write.parquet('/mnt/silver/qualifying', mode = 'overwrite')
+from pyspark.sql.functions import regexp_replace,isnull, when
+
+columns = df.columns
+df1 = df
+for  i in columns:
+    df1 = df1.withColumn(i, regexp_replace(i,'\\\\N','')).withColumn(i, when(col(i).isNull(), '').otherwise(col(i)))
+    
+display(df1)
+df1.write.parquet('/mnt/dataricks-formula-one/silver/qualifying', mode ='overwrite')
 
 # COMMAND ----------
 

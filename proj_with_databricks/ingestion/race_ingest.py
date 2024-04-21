@@ -12,7 +12,7 @@ input_schema = StructType(
     [
     StructField('raceId', IntegerType()),
     StructField('year', IntegerType()),
-    StructField('`round` ', IntegerType()),
+    StructField('round', IntegerType()),
     StructField('circuitId', IntegerType()),
     StructField('name', StringType()),
     StructField('date', DateType()),
@@ -35,11 +35,11 @@ input_schema = StructType(
 
 # COMMAND ----------
 
-dbutils.fs.ls('mnt/bronze/')
+dbutils.fs.ls('mnt/dataricks-formula-one/bronze/')
 
 # COMMAND ----------
 
-df = create_csv_df('dbfs:/mnt/bronze/races.csv',input_schema )
+df = create_csv_df('dbfs:/mnt/dataricks-formula-one/bronze/races.csv',input_schema )
 display(df)
 
 # COMMAND ----------
@@ -57,7 +57,15 @@ display(df)
 
 # COMMAND ----------
 
-df.write.parquet('/mnt/silver/race', mode ='overwrite')
+from pyspark.sql.functions import regexp_replace,isnull,when
+
+columns = df.columns
+df1 = df
+for  i in columns:
+    df1 = df1.withColumn(i, regexp_replace(i,'\\\\N','')).withColumn(i, when(col(i).isNull(), '').otherwise(col(i)))
+    
+display(df1)
+df1.write.parquet('/mnt/dataricks-formula-one/silver/race', mode ='overwrite')
 
 # COMMAND ----------
 

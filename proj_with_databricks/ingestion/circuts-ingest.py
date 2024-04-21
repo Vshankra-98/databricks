@@ -34,7 +34,11 @@ input_schema = StructType(
 # COMMAND ----------
 
 
-df = create_csv_df('dbfs:/mnt/bronze/circuits.csv' , input_schema)
+
+# COMMAND ----------
+
+
+df = create_csv_df('dbfs:/mnt/dataricks-formula-one/bronze/circuits.csv' , input_schema)
 display(df)
 df.printSchema()
 
@@ -55,16 +59,25 @@ display(df)
 
 # COMMAND ----------
 
-display(dbutils.fs.ls('/mnt/bronze'))
+display(dbutils.fs.ls('/mnt/dataricks-formula-one/bronze'))
 
 
 # COMMAND ----------
 
-dbutils.fs.ls("dbfs:/mnt/silver/circuts/")
+dbutils.fs.ls("dbfs:/mnt/dataricks-formula-one/silver/circuts/")
 
 # COMMAND ----------
 
-df.write.parquet("dbfs:/mnt/silver/circuts/", mode = 'overwrite')
+from pyspark.sql.functions import regexp_replace,isnull, when
+
+columns = df.columns
+df1 = df
+for  i in columns:
+    df1 = df1.withColumn(i, regexp_replace(i,'\\\\N','')).withColumn(i, when(col(i).isNull(), '').otherwise(col(i)))
+    
+display(df1)
+
+df1.write.parquet("dbfs:/mnt/dataricks-formula-one/silver/circuts/", mode = 'overwrite')
 
 # COMMAND ----------
 
