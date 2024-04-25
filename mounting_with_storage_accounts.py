@@ -10,13 +10,13 @@ dbutils.secrets.listScopes()
 # COMMAND ----------
 
 
-dbutils.secrets.list('secrete-stproject')
+dbutils.secrets.list('stproject')
 
 # COMMAND ----------
 
-app_id = dbutils.secrets.get('secrete-stproject', 'app-id')
-directory_id = dbutils.secrets.get('secrete-stproject', 'directory-id')
-screte = dbutils.secrets.get('secrete-stproject', 'secrete-id')
+app_id = dbutils.secrets.get('stproject', 'app-id')
+directory_id = dbutils.secrets.get('stproject', 'directory-id')
+screte = dbutils.secrets.get('stproject', 'secrete')
 
 
 

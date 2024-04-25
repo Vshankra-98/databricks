@@ -64,10 +64,6 @@ display(dbutils.fs.ls('/mnt/dataricks-formula-one/bronze'))
 
 # COMMAND ----------
 
-dbutils.fs.ls("dbfs:/mnt/dataricks-formula-one/silver/circuts/")
-
-# COMMAND ----------
-
 from pyspark.sql.functions import regexp_replace,isnull, when
 
 columns = df.columns
@@ -78,10 +74,6 @@ for  i in columns:
 display(df1)
 
 df1.write.parquet("dbfs:/mnt/dataricks-formula-one/silver/circuts/", mode = 'overwrite')
-
-# COMMAND ----------
-
-display(dbutils.fs.ls("dbfs:/mnt/silver/circuts/"))
 
 # COMMAND ----------
 

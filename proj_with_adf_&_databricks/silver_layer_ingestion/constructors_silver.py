@@ -1,17 +1,29 @@
 # Databricks notebook source
+dbutils.widgets.text('layer','')
+dbutils.widgets.text('dataset_name', '')
+
+
+
+# COMMAND ----------
+
+layer = dbutils.widgets.get('layer')
+dataset_name = dbutils.widgets.get('dataset_name')
+
+# COMMAND ----------
+
 display(dbutils.fs.ls('/mnt/formula-one/bronze/'))
 
 # COMMAND ----------
 
  from pyspark.sql.functions import col, concat, lit
  
- df = (spark.read.json('dbfs:/mnt/formula-one/bronze/drivers/'))
+ df = (spark.read.json('dbfs:/mnt/formula-one/bronze/constructors/'))
 
-df = df.select( col('nationality'),  col('driverId').alias('driver_Id'), concat( col('givenName'), lit('  '), col('familyName')).alias("Driver"))
+df = df.select( col('constructorId').alias('constructor_Id'),  col('constructorRef').alias('constructor_Ref'), col('name').alias('Team'), col('nationality'))
 
 display(df)
 
-df.write.mode('overwrite').format('delta').save('dbfs:/mnt/formula-one/silver/drivers')
+df.write.mode('overwrite').format('delta').save(f'dbfs:/mnt/formula-one/{layer}/{dataset_name}')
 
 
 # COMMAND ----------
