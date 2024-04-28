@@ -48,7 +48,7 @@ constructor_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/cons
 
 race_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/race/').select(['race_id', 'year', 'round', 'circuit_Id', 'name', 'date'])
 
-result_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/results/').select(['result_Id', 'race_Id', 'driver_Id', 'grid', 'points', col('time').alias('Race Time'), col('fastestLapTime').alias('Fastest Lap'), 'constructor_Id'])
+result_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/results/').select(['result_Id', 'race_Id', 'driver_Id', 'grid', 'points', col('time').alias('Race Time'), col('fastestLapTime').alias('Fastest Lap'), 'constructor_Id', "position"])
 
 pitsots_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/pit_stops/').select(['driverId', 'duration', 'raceId', col('stop').alias('Pits')])
 

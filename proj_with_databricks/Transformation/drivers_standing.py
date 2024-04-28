@@ -16,29 +16,17 @@ display(dbutils.fs.ls('/mnt/dataricks-formula-one/silver'))
 from pyspark.sql.functions import col,row_number,desc, sum
 from pyspark.sql.window import Window
 
-drivers_standing = final_df.select('Driver', 'Team','grid', 'circuit_Id', 'points', 'year', 'round', 'name', 'date').withColumn('rank', row_number().over(Window.partitionBy(col('year'), col('circuit_Id')).orderBy(desc(col("points"))))).filter(col('rank') == 1)
+drivers_standing = final_df.select('Driver', 'Team', 'position' ,'points', 'year').filter(col('position') == 1).withColumn('wins', sum(col('position')).over(Window.partitionBy(col('Driver'),col('year')).orderBy(desc(col("points"))))).select(['Driver', 'Team', 'wins' , 'points' ])
 
-drivers_standing = drivers_standing.withColumn('wins', sum(col('rank')).over(Window.partitionBy(col('year')))).select('Driver', 'Team', 'wins', 'points', 'year', 'name').distinct()
+# drivers_standing = drivers_standing.withColumn('wins', sum(col('rank')).over(Window.partitionBy(col('year')))).select('Driver', 'Team', 'wins', 'points', 'year').distinct()
 
+print(drivers_standing.columns)
 drivers_standing.display()
 
 # COMMAND ----------
 
-from pyspark.sql.functions import col,concat, lit, desc
+drivers_standing.write.mode('overwrite').parquet('dbfs:/mnt/dataricks-formula-one/gold/drivers_standing/')
+
+# COMMAND ----------
 
 
-driver_df = spark.read.parquet("dbfs:/mnt/dataricks-formula-one/silver/drivers/").withColumn('Driver',concat(col('Forename'),lit('  '), col('surname'))).select(['driver_Id', 'driver_Ref', col('number'), 'nationality', 'Driver'])
-
-constructor_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/constructors/').select('constructor_Id', col('name').alias('Team'))
-
-race_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/race/').select(['race_id', 'year', 'round', 'circuit_Id', 'name', 'date'])
-
-
-circuit_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/circuts/').select(["country", "location",  "circuit_ref", "circuit_id"])
-
-
-
-result_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/results/').select(['result_Id', 'race_Id', 'driver_Id', 'grid', 'points', col('time').alias('Race Time'), col('fastestLapTime').alias('Fastest Lap'), 'constructor_Id'])
-
-
-# pitsots_df = spark.read.parquet('dbfs:/mnt/dataricks-formula-one/silver/pit_stops/').select(['driverId', 'duration', 'raceId', col('stop').alias('Pits')])

@@ -41,6 +41,7 @@ dbutils.fs.ls('mnt/dataricks-formula-one/bronze/')
 
 df = create_csv_df('dbfs:/mnt/dataricks-formula-one/bronze/races.csv',input_schema )
 display(df)
+print(df.columns)
 
 # COMMAND ----------
 
