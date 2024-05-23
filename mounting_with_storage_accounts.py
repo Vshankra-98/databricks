@@ -50,7 +50,7 @@ display(dbutils.fs.mounts())
 
 # COMMAND ----------
 
-display(dbutils.fs.ls(f"/mnt/{container_name}/bronze"))
+display(dbutils.fs.ls(f"/mnt/{container_name}/"))
 
 # COMMAND ----------
 
